@@ -11,6 +11,7 @@ function App() {
   const [pageTitle, setPageTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [domain, setDomain] = useState<string>("");
+  const [robotsTxtExists, setRobotsTxtExists] = useState<boolean | null>(null);
 
   useEffect(() => {
     const handleMessage = (message: {
@@ -22,6 +23,7 @@ function App() {
       h6Tags: number;
       title: string;
       description: string;
+      hasRobotsTxt: boolean;
     }) => {
       console.log("Message received in App.tsx:", message);
       if (message.h1Tags !== undefined) {
@@ -33,6 +35,7 @@ function App() {
         setH6Count(message.h6Tags);
         setPageTitle(message.title);
         setMetaDescription(message.description);
+        setRobotsTxtExists(message.hasRobotsTxt);
         console.log("Received message:", message);
       }
       console.log("Received message:", message);
@@ -44,11 +47,15 @@ function App() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       if (activeTab && activeTab.id !== undefined) {
-        console.log("sending message to content script")
-        chrome.tabs.sendMessage(activeTab.id, { action: "countH1Tags" }, (response) => {
-          console.log("Response received from content script:", response);
-          handleMessage(response); // Handle the response in the callback
-        });
+        console.log("sending message to content script");
+        chrome.tabs.sendMessage(
+          activeTab.id,
+          { action: "countH1Tags" },
+          (response) => {
+            console.log("Response received from content script:", response);
+            handleMessage(response); // Handle the response in the callback
+          }
+        );
         const url = new URL(activeTab.url!);
         setDomain(url.hostname);
       }
@@ -135,6 +142,19 @@ function App() {
             {h6Count}
           </div>
         </div>
+      </section>
+
+      <section className="mb-10 p-4 w-full bg-white rounded-xl">
+        <h1>Robots.txt Status</h1>
+        {robotsTxtExists === null ? (
+          <p>Checking...</p>
+        ) : robotsTxtExists ? (
+          <p className="text-green-500">robots.txt exists on this site.</p>
+        ) : (
+          <p className="text-red-500">
+            robots.txt does not exist on this site.
+          </p>
+        )}
       </section>
 
       <section className="mb-10 p-4 w-full bg-white rounded-xl">
