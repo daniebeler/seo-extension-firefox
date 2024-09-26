@@ -12,6 +12,7 @@ function App() {
   const [metaDescription, setMetaDescription] = useState("");
   const [domain, setDomain] = useState<string>("");
   const [robotsTxtExists, setRobotsTxtExists] = useState<boolean | null>(null);
+  const [sitemapExists, setSitemapExists] = useState<boolean | null>(null);
 
   useEffect(() => {
     const handleMessage = (message: {
@@ -24,6 +25,7 @@ function App() {
       title: string;
       description: string;
       hasRobotsTxt: boolean;
+      hasSitemapXml: boolean;
     }) => {
       console.log("Message received in App.tsx:", message);
       if (message.h1Tags !== undefined) {
@@ -36,6 +38,7 @@ function App() {
         setPageTitle(message.title);
         setMetaDescription(message.description);
         setRobotsTxtExists(message.hasRobotsTxt);
+        setSitemapExists(message.hasSitemapXml);
         console.log("Received message:", message);
       }
       console.log("Received message:", message);
@@ -154,6 +157,17 @@ function App() {
           <p className="text-red-500">
             robots.txt does not exist on this site.
           </p>
+        )}
+      </section>
+
+      <section className="mb-10 p-4 w-full bg-white rounded-xl">
+        <h1>Sitemap Status</h1>
+        {sitemapExists === null ? (
+          <p>Checking...</p>
+        ) : sitemapExists ? (
+          <p className="text-green-500">Sitemap exists on this site.</p>
+        ) : (
+          <p className="text-red-500">Sitemap does not exist on this site.</p>
         )}
       </section>
 

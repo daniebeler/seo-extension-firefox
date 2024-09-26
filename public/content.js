@@ -42,18 +42,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       ? metaDescriptionTag.getAttribute("content")
       : "No meta description found";
 
-    checkRobotsTxt().then((hasRobotsTxt) => {
-      // Send the data back to the popup
-      chrome.runtime.sendMessage({
-        h1Tags,
-        h2Tags,
-        h3Tags,
-        h4Tags,
-        h5Tags,
-        h6Tags,
-        title,
-        description,
-        hasRobotsTxt
+    checkRobotsTxt().then(({ hasRobotsTxt, sitemapUrl }) => {
+      console.log("robots resolved")
+      checkSitemapXml(sitemapUrl).then((hasSitemapXml) => {
+        console.log("sitemap resolves", sitemapUrl)
+        // Send the data back to the popup
+        chrome.runtime.sendMessage({
+          h1Tags,
+          h2Tags,
+          h3Tags,
+          h4Tags,
+          h5Tags,
+          h6Tags,
+          title,
+          description,
+          hasRobotsTxt,
+          hasSitemapXml,
+        });
       });
     });
   }
@@ -61,19 +66,60 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 const checkRobotsTxt = async () => {
   try {
-    const domain = window.location.origin; // Get the current domain (like https://example.com)
-    const robotsTxtUrl = `${domain}/robots.txt`;
+    const domain = window.location.origin;
+    var robotsTxtUrl = `${domain}/robots.txt`;
+
+    robotsTxtUrl = ensureHttps(robotsTxtUrl);
 
     const response = await fetch(robotsTxtUrl);
     if (response.ok) {
+      const robotsTxtContent = await response.text();
       console.log("robots.txt found");
-      return true;
+
+      // Check for any Sitemap directive inside robots.txt
+      const sitemapMatch = robotsTxtContent.match(/Sitemap:\s*(.+)/i);
+      var sitemapUrl = sitemapMatch ? sitemapMatch[1].trim() : null;
+      if (sitemapUrl) {
+        sitemapUrl = ensureHttps(sitemapUrl);
+      }
+      return { hasRobotsTxt: true, sitemapUrl };
     } else {
       console.log("robots.txt not found or inaccessible");
-      return false;
+      return { hasRobotsTxt: false, sitemapUrl: null };
     }
   } catch (error) {
     console.error("Error fetching robots.txt:", error);
+    return { hasRobotsTxt: false, sitemapUrl: null };
+  }
+};
+
+// Function to check if sitemap.xml exists at the default location
+const checkSitemapXml = async (sitemapUrl) => {
+  try {
+    // If we already have a sitemap URL from robots.txt, use that, otherwise check the default location
+    const domain = window.location.origin;
+    const defaultSitemapUrl = sitemapUrl || `${domain}/sitemap.xml`;
+
+    console.log("default stiemap url", defaultSitemapUrl)
+
+    const response = await fetch(defaultSitemapUrl);
+    if (response.ok) {
+      console.log("Sitemap found at:", defaultSitemapUrl);
+      return true;
+    } else {
+      console.log("Sitemap not found at:", defaultSitemapUrl);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching sitemap.xml:", error);
     return false;
   }
+};
+
+
+const ensureHttps = (url) => {
+  if (url.startsWith('http://')) {
+    return url.replace('http://', 'https://');
+  }
+  return url;
 };
