@@ -17,24 +17,28 @@ const isVisible = (element) => {
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
+  console.log("Recieved message in content.js");
   if (request.action === "countH1Tags") {
+
+    console.log("Counting H1 tags...");
     const h1Elements = document.querySelectorAll("h1");
-    const visibleH1Tags = Array.from(h1Elements).filter(isVisible).length;
+    const H1Tags = Array.from(h1Elements).filter(isVisible).length;
 
     const h2Elements = document.querySelectorAll("h2");
-    const visibleH2Tags = Array.from(h2Elements).filter(isVisible).length;
+    const H2Tags = Array.from(h2Elements).filter(isVisible).length;
 
     const h3Elements = document.querySelectorAll("h3");
-    const visibleH3Tags = Array.from(h3Elements).filter(isVisible).length;
+    const H3Tags = Array.from(h3Elements).filter(isVisible).length;
 
     const h4Elements = document.querySelectorAll("h4");
-    const visibleH4Tags = Array.from(h4Elements).filter(isVisible).length;
+    const H4Tags = Array.from(h4Elements).filter(isVisible).length;
 
     const h5Elements = document.querySelectorAll("h5");
-    const visibleH5Tags = Array.from(h5Elements).filter(isVisible).length;
+    const H5Tags = Array.from(h5Elements).filter(isVisible).length;
 
     const h6Elements = document.querySelectorAll("h6");
-    const visibleH6Tags = Array.from(h6Elements).filter(isVisible).length;
+    const H6Tags = Array.from(h6Elements).filter(isVisible).length;
 
     const title = document.title;
 
@@ -45,14 +49,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       ? metaDescriptionTag.getAttribute("content")
       : "No meta description found";
 
+console.log("sending response")
+
     // Send the data back to the popup
     chrome.runtime.sendMessage({
-      visibleH1Tags,
-      visibleH2Tags,
-      visibleH3Tags,
-      visibleH4Tags,
-      visibleH5Tags,
-      visibleH6Tags,
+      h1Tags: H1Tags,
+      h2Tags: H2Tags,
+      h3Tags: H3Tags,
+      h4Tags: H4Tags,
+      h5Tags: H5Tags,
+      h6Tags: H6Tags,
       title,
       description,
     });

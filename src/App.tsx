@@ -23,6 +23,7 @@ function App() {
       title: string;
       description: string;
     }) => {
+      console.log("Message received in App.tsx:", message);
       if (message.h1Tags !== undefined) {
         setH1Count(message.h1Tags);
         setH2Count(message.h2Tags);
@@ -43,7 +44,11 @@ function App() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       if (activeTab && activeTab.id !== undefined) {
-        chrome.tabs.sendMessage(activeTab.id, { action: "countH1Tags" });
+        console.log("sending message to content script")
+        chrome.tabs.sendMessage(activeTab.id, { action: "countH1Tags" }, (response) => {
+          console.log("Response received from content script:", response);
+          handleMessage(response); // Handle the response in the callback
+        });
         const url = new URL(activeTab.url!);
         setDomain(url.hostname);
       }

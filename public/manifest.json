@@ -3,7 +3,7 @@
   "name": "H1 Counter React v2",
   "version": "1.0",
   "description": "Zählt die Anzahl der H1-Tags auf der aktuellen Seite.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "tabs"],
   "action": {
       "default_title": "Black Lemon SEO React v2",
       "default_popup": "index.html",
