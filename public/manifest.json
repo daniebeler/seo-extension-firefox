@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "H1 Counter React v2",
+  "name": "Black Lemon SEO",
   "version": "1.0",
-  "description": "Zählt die Anzahl der H1-Tags auf der aktuellen Seite.",
+  "description": "SEO Checker",
   "permissions": ["activeTab", "scripting", "tabs"],
   "action": {
-      "default_title": "Black Lemon SEO React v2",
+      "default_title": "Black Lemon SEO",
       "default_popup": "index.html",
       "default_icon": {
           "96": "icons/logo-96.png"

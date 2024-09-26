@@ -16,6 +16,8 @@ function App() {
   const [robotsTxtExists, setRobotsTxtExists] = useState<boolean | null>(null);
   const [sitemapExists, setSitemapExists] = useState<boolean | null>(null);
 
+  const [accordionOpen, setAccordionOpen] = useState(false);
+
   useEffect(() => {
     const handleMessage = (message: {
       h1Tags: number;
@@ -75,21 +77,29 @@ function App() {
     };
   }, []);
 
+  const toggleAccordion = () => {
+    setAccordionOpen(!accordionOpen);
+  };
+
   return (
     <div className="p-5 w-[600px] bg-zinc-200">
+      <div className="py-4">
+        <img src="/images/logo.svg" className="h-12" alt="" />
+      </div>
+
       <section className="mb-10 p-4 w-full bg-white rounded-xl">
         <div>
-          <div className="flex items-center">
-            <h2 className="m-0 mr-2">Title</h2>
+          <div className="flex w-full items-center">
+            <h2 className="m-0 mr-2 flex-1">Title</h2>
 
             {pageTitle.length >= 50 && pageTitle.length <= 60 && (
-              <div className="bg-green-500 p-1 rounded-full text-sm">
+              <div className="bg-green-500 p-1 rounded-full text-sm text-white">
                 {pageTitle.length} characters
               </div>
             )}
 
             {(pageTitle.length < 50 || pageTitle.length > 60) && (
-              <div className="bg-red-500 p-1 rounded-full text-sm">
+              <div className="bg-red-500 p-1 rounded-full text-sm text-white">
                 {pageTitle.length} characters
               </div>
             )}
@@ -98,29 +108,46 @@ function App() {
           <p>{pageTitle}</p>
         </div>
 
-        <div>
-          <div className="flex items-center">
-            <h2 className="m-0 mr-2">Description</h2>
+        <div className="mt-6">
+          <div onClick={toggleAccordion} className="rounded-lg p-2 cursor-pointer hover:bg-zinc-200">
+            <div className="flex w-full items-center">
+              <h2 className="m-0 flex-1 mr-2">Description</h2>
 
-            {metaDescription.length >= 150 && metaDescription.length <= 170 && (
-              <div className="bg-green-500 p-1 rounded-full text-sm">
-                {metaDescription.length} characters
-              </div>
-            )}
+              {metaDescription.length >= 150 &&
+                metaDescription.length <= 170 && (
+                  <div className="bg-green-500 p-1 rounded-full text-sm text-white">
+                    {metaDescription.length} characters
+                  </div>
+                )}
 
-            {(metaDescription.length < 150 || metaDescription.length > 170) && (
-              <div className="bg-red-500 p-1 rounded-full text-sm">
-                {metaDescription.length} characters
-              </div>
-            )}
+              {(metaDescription.length < 150 ||
+                metaDescription.length > 170) && (
+                <div className="bg-red-500 p-1 rounded-full text-sm text-white">
+                  {metaDescription.length} characters
+                </div>
+              )}
+            </div>
+
+            <p>{metaDescription}</p>
           </div>
 
-          <p>{metaDescription}</p>
+          {accordionOpen && (
+            <div className="mt-2 p-4 border rounded bg-gray-100">
+
+              <ol>
+                <li>Length: Aim for 150-160 characters to ensure the description displays fully in search results without being cut off.</li>
+             
+             <li>Keywords: Include relevant keywords naturally. This helps improve search visibility and aligns with user intent.</li>
+             
+             <li>Tone and Voice: Use a tone that resonates with your target audience, whether it's professional, casual, or technical.</li>
+              </ol>
+            </div>
+          )}
         </div>
       </section>
 
       <section className="mb-10 p-4 w-full bg-white rounded-xl">
-        <div className="flex">
+        <div className="flex justify-evenly">
           <div className="flex flex-col items-center mr-2">
             <h3>H1</h3>
             {h1Count}
