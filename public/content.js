@@ -33,6 +33,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const h6Elements = document.querySelectorAll("h6");
     const h6Tags = Array.from(h6Elements).length;
 
+    const imgElements = document.querySelectorAll("img");
+    const imgTags = Array.from(imgElements).length;
+
+    const aElements = document.querySelectorAll("a");
+    const aTags = Array.from(aElements).length;
+
     const title = document.title;
 
     const metaDescriptionTag = document.querySelector(
@@ -54,6 +60,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           h4Tags,
           h5Tags,
           h6Tags,
+          imgTags,
+          aTags,
           title,
           description,
           hasRobotsTxt,

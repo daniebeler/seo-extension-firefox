@@ -8,6 +8,8 @@ function App() {
   const [h4Count, setH4Count] = useState(0);
   const [h5Count, setH5Count] = useState(0);
   const [h6Count, setH6Count] = useState(0);
+  const [imgCount, setImgCount] = useState(0);
+  const [aCount, setACount] = useState(0);
   const [pageTitle, setPageTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [domain, setDomain] = useState<string>("");
@@ -22,6 +24,8 @@ function App() {
       h4Tags: number;
       h5Tags: number;
       h6Tags: number;
+      imgTags: number;
+      aTags: number;
       title: string;
       description: string;
       hasRobotsTxt: boolean;
@@ -35,6 +39,8 @@ function App() {
         setH4Count(message.h4Tags);
         setH5Count(message.h5Tags);
         setH6Count(message.h6Tags);
+        setImgCount(message.imgTags);
+        setACount(message.aTags);
         setPageTitle(message.title);
         setMetaDescription(message.description);
         setRobotsTxtExists(message.hasRobotsTxt);
@@ -143,6 +149,16 @@ function App() {
           <div className="flex flex-col items-center mr-2">
             <h3>H6</h3>
             {h6Count}
+          </div>
+
+          <div className="flex flex-col items-center mr-2">
+            <h3>Images</h3>
+            {imgCount}
+          </div>
+
+          <div className="flex flex-col items-center mr-2">
+            <h3>Links</h3>
+            {aCount}
           </div>
         </div>
       </section>
